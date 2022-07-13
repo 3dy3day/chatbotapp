@@ -1,0 +1,261 @@
+// Variables
+$bg-color: #2EC4B6;
+
+$inbox-primary: #EDF2F4;
+$inbox-secondary: lighten($bg-color, 7%);
+$inbox-width: 650px;
+$inbox-height: 450px;
+$inbox-radius: 4px;
+
+// Universal Selector
+* {
+  margin: 0; padding: 0;
+  box-sizing: border-box;
+  font-family: 'Montserrat', sans-serif;
+}
+
+// Default Styles
+html,body {
+  background: linear-gradient(180deg, $bg-color, #9EB1E9);
+  overflow-x: hidden;
+}
+
+// Container
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+// Inbox Styles
+.inbox {
+  background: $inbox-primary;
+  width: $inbox-width;
+  height: $inbox-height;
+  display: flex;
+  border-radius: $inbox-radius;
+  // Aside Styles
+  aside {
+    background: $inbox-secondary;
+    flex: 1 1 auto;
+    height: 100%;
+    border-top-left-radius: $inbox-radius;
+    border-bottom-left-radius: $inbox-radius;
+    .avatar {
+      width: 30px;
+      height: 30px;
+      border: 2px solid #FFF;
+      border-radius: 100%;
+    }
+    // Li Elements In Aside
+    li {
+      background: darken($inbox-secondary, 3%);
+      list-style: none;
+      color: #FFF;
+      display: flex;
+      justify-content: space-between;
+      padding: 0 2em;
+      align-items: center;
+      height: 5em;
+      font-size: 0.8em;
+      cursor: pointer;
+      border-bottom: 1px solid lighten($inbox-secondary, 2%);
+      border-top-left-radius: $inbox-radius;
+      &:hover {
+        background: darken($inbox-secondary, 5%);
+      }
+    }
+  }
+  // Our Main Content Where Conversations Will Be Listed
+  main {
+    background: $inbox-primary;
+    height: 100%;
+    flex: 1 1 70%;
+    border-top-right-radius: $inbox-radius;
+    border-bottom-right-radius: $inbox-radius;
+    transform: scale(1.035);
+    .message-wrap {
+      height: 88%;
+      overflow-y: scroll;
+    }
+    .message {
+      background: $inbox-secondary;
+      width: 70%;
+      margin: 1em 6em;
+      padding: 1em;
+      border-radius: $inbox-radius;
+      opacity: 1;
+      transition: opacity ease-in-out .45s;
+      p {
+        font-size: 0.68em;
+        color: #FFF;
+        font-weight: 300;
+      }
+      img {
+        width: 30px;
+        height: 30px;
+        border-radius: 100%;
+        transform: translateX(-70px) translateY(-20px);
+        float: left;
+      }
+      &:nth-of-type(even) {
+        background: darken($inbox-secondary, 6%);
+        margin: 1em 1em;
+      }
+    }
+    // Our Footer To Our Main Content, Contains The Submit Form
+    footer {
+      position: fixed;
+      bottom: 0;
+      height: 12%;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      border-top: 1px solid darken($inbox-primary, 4%);
+      input[type="text"] {
+        border: none;
+        background: transparent;
+        padding: 0.8em;
+        outline: none;
+        color: #AAA;
+        width: 100%;
+      }
+      input[type="submit"] {
+        background: $inbox-secondary;
+        color: #FFF;
+        width: 17%;
+        border-radius: 4px;
+        padding: 0.8em;
+        margin: 0 1em;
+        border: none;
+        cursor: pointer;
+        appearance: none;
+      }
+      form {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+      }
+    }
+  }
+}
+
+// Initial Start Up Screen
+.init {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-flow: column wrap;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: -1;
+  text-align: center;
+  i {
+    font-size: 5em;
+    color: $inbox-secondary;
+  }
+  h4 {
+    margin: 1em auto;
+    color: $inbox-secondary;
+  }
+}
+
+// Custom Animation Loading Screen
+.loader {
+  opacity: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-flow: column wrap;
+  height: 100%;
+  position: absolute;
+  margin: 0 auto;
+  left: 0;
+  right: 0;
+  z-index: -1;
+  text-align: center;
+  p {
+    background: $inbox-secondary;
+    width: 20px;
+    height: 20px;
+    border-radius: 100%;
+    animation: loading 2000ms cubic-bezier(0.470, 0.000, 0.745, 0.715) infinite;
+    &:before {
+      content: '';
+      background: $inbox-secondary;
+      width: 40px;
+      height: 40px;
+      opacity: 1;
+      display: block;
+      transform: translateX(-10px) translateY(-10px);
+      border-radius: 100%;
+      animation: loading 2000ms cubic-bezier(0.470, 0.000, 0.745, 0.715) infinite;
+      animation-delay: 50ms;
+    }
+  }
+  h4 {
+    margin: 1em auto;
+    color: $inbox-secondary;
+  }
+}
+
+// Loading Animation
+@keyframes loading {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+// Custom Scrollbars
+::-webkit-scrollbar {
+    width: 0px;
+}
+ 
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+ 
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+
+
+/* Box styles */
+.myBox {
+border: none;
+padding: 5px;
+font: 24px/36px sans-serif;
+width: 200px;
+height: 200px;
+overflow: scroll;
+}
+
+/* Scrollbar styles */
+::-webkit-scrollbar {
+width: 12px;
+height: 12px;
+}
+
+::-webkit-scrollbar-track {
+border: 1px solid yellowgreen;
+border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+background: yellowgreen;  
+border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+background: #88ba1c;  
+}

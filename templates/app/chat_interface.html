@@ -1,0 +1,159 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container">
+    <!-- Window for character -->
+    <center>
+        <img id="face" class="responsive-img" src="../../static/images/base.png", style="height:50%; width:50%;">
+    </center>
+
+    <!-- Chat log-->
+    <ul class="chat-thread">
+        <div class="myBox", style="height:250px; width:100%; overflow-y: scroll; background-color: aliceblue; border-radius: 10px;", id="chat_box">
+        </div>
+    </ul>
+
+    <form class="col s12" onsubmit="changeHandler(); return false;" autocomplete="off">
+        <div class="row">
+            <div class="input-field col s12">
+                <input name="text" id="textarea1" type="text" class="materialize-textarea">
+                <label for="textarea1">Textarea</label>
+            </div>
+        </div>
+    </form>
+
+    <div class="fixed-action-btn" style="bottom: 45px; right: 24px;" onclick="toggleAudio()">
+        <a class="btn-floating btn-large red">
+            <i class="large material-icons" id ="audioBtn">volume_off</i>
+        </a>
+    </div>
+
+
+    <script>
+        const chatlog = [];
+        let btnState = false;
+        let list = document.getElementById('chat_box');
+
+        function changeHandler() {
+            const inputText = $("#textarea1").val();
+            const chat = {"who": "user", "message": inputText};
+            clearText();
+            addChat(chat);
+
+            $.ajax("/ai_intereact", {
+                type: "post",
+                data: chat,
+                dataType: "json",
+            }).done(function(receivedData) {
+                console.log("Ajax Success");
+                addChat(receivedData);
+            }).fail(function(data) {
+                alert("Oops, Something Went Wrong");
+            });
+        }
+
+        function addChat(chat) {
+            chatlog.push(chat);
+            if (btnState == true && chat["who"] == "ai") {
+                genVoice(chat["message"], chat);
+            } else if (btnState == false && chat["who"] == "ai") {
+                addChatToScreen(chat);
+            } else if (chat["who"] == "user") {
+                addChatToScreen(chat);
+            }   
+        }
+
+        function addChatToScreen(chat) {
+            if (chat["who"] == "user") {   
+                $("#chat_box").append(`<li align="right" style="padding: 12px;"><span, style="background-color: #FFCDD2;"> ${chat["message"]} </span></li>`);
+            } else if (chat["who"] == "ai") {
+                $("#chat_box").append(`<li align="left" style="padding: 12px;"><span, style="background-color: #FFEBEE;">TSUMUGI_AI: ${chat["message"]} </span></li>`);
+                facialExperssion(chat["emo"]);
+            }
+            list.scrollTo(0, list.scrollHeight);
+        }
+        
+        function facialExperssion(emo) {
+            const elem = document.getElementById("face");
+            const num = Math.floor(Math.random() * 5) ;
+
+            if (emo == "Positive") {
+                // 10~ positive
+                const face = "positive_0" + num + ".png";
+                elem.src = `../../static/images/${face}`;
+                
+            } else if (emo == "Neutral") {
+                // 20~ neutral
+                const face = "neutral_1" + num + ".png";
+                elem.src = `../../static/images/${face}`;
+            } else if (emo == "Negative") {
+                // 30~ negative
+                const face = "negative_2" + num + ".png";
+                elem.src = `../../static/images/${face}`;
+            }
+        }
+
+        function clearText() {
+            var textForm = document.getElementById("textarea1");
+            textForm.value = '';
+        }
+
+        function toggleAudio() {
+            if (btnState == false) {
+                document.getElementById('audioBtn').textContent = "volume_up";
+                btnState = true;
+            } else if (btnState == true) {
+                document.getElementById('audioBtn').textContent = "volume_off";
+                btnState = false;
+            }
+        }
+
+        function genVoice(text, chat) {
+            data = {"message": text};
+            $.ajax("/genVoice", {
+                type: "post",
+                data: data,
+            }).done(function(receivedData) {
+                if (receivedData == "ERROR") {
+                    alert("Oops, Something Went Wrong");
+                    document.getElementById('audioBtn').textContent = "volume_off";
+                    btnState = false;
+                } else {
+                    playAudio(receivedData, chat)
+                }
+            }).fail(function(data) {
+                alert("Oops, Something Went Wrong");
+            });
+        }
+
+        function playAudio(id, chat) {
+            if (btnState == true) {
+                src = '../../static/audio/' + id
+                let music = new Audio(src);
+                music.load();
+                music.play();
+                addChatToScreen(chat);
+                // $.when(
+                //     music.play()
+                // ).done(function() {
+                    // deleteAudio(id);
+                // }).fail(function() {
+                //     console.log("failed to play audio");
+                // });     
+            }
+        }
+
+        function deleteAudio(id) {
+            data = {"id": id};
+            $.ajax("/delAudio", {
+                type: "post",
+                data: data,
+            }).done(function(receivedData) {
+                console.log("file deleted");
+            }).fail(function(receivedData) {
+                console.log("failed to delete file");
+            });
+        }
+
+    </script>
+</div>
+{% endblock %}

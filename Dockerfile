@@ -1,5 +1,8 @@
 FROM python:alpine
 
+RUN apk update && \
+    apk add git
+
 RUN git clone https://github.com/sandy-sunday/chatbotapp.git .
 
 RUN pip install --upgrade pip
